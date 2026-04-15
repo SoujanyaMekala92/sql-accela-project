@@ -1,0 +1,6 @@
+BULK INSERT RAW_SPROCESS_GROUP
+FROM '/tmp/sprocess_group_dump.csv'
+WITH (
+FIELDTERMINATOR = ',',
+ROWTERMINATOR = '\n'
+);

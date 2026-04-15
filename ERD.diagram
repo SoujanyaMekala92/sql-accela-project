@@ -1,0 +1,194 @@
+SPROCESS
+---------
+SERV_PROV_CODE
+R1_PROCESS_CODE
+SD_PRO_DES (Task Name)
+SD_STP_NUM
+↓
+JOIN
+
+R3STATYP
+---------
+SERV_PROV_CODE
+R3_PROCESS_CODE
+R3_ACT_TYPE_DES (Task)
+R3_ACT_STAT_DES (Status)
+
+↓ JOIN RESULT
+
+WORKFLOW_DATASET
+----------------
+Agency
+Workflow
+Task
+Status
+
+↓ mapped into
+
+SPROCESS_KPI
+-------------
+Agency
+Workflow
+Task
+Status
+TIME_OWNER
+RECORD_FINAL
+ERROR_TYPE
+CONFIDENCE
+LAST_UPDATED
+
+
+
+
+
+
+---CORE ER diagram
+
+SPROCESS
+   │
+   │ SERV_PROV_CODE
+   │ R1_PROCESS_CODE
+   │
+   ▼
+R3STATYP
+   │
+   │ workflow + task + status
+   │
+   ▼
+CANONICAL DATASET
+(Workflow + Task + Status)
+   │
+   ▼
+SPROCESS_KPI (Mapping Table)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                +-------------+
+                |   SPROCESS  |
+                +-------------+
+                       |
+                       |
+                       v
+                +--------------+
+                | SPROCESS_KPI |
+                +--------------+
+                  ^          ^
+                  |          |
+        +---------------+  +-----------+
+        |SPROCESS_GROUP |  | R3STATYP  |
+        +---------------+  +-----------+
+
+
+
++-----------+         +----------------------+
+| R3APPTYP  | ------> | R3APPTYPE_COMPLAINT |
++-----------+         +----------------------+
+
+
+
++----------------+
+| RSERV_WORKDAYS |
++----------------+
+
+
+
+
+----------Backend Python Project Architecure
+
+
+
+kpi-mapping-backend/
+│
+├── app/
+│
+│   ├── main.py                     # Entry point
+│
+│   ├── api/                        # API Layer 
+│   │   └── routes/
+│   │       ├── ai_mapping.py
+│   │       ├── feedback.py
+│   │       ├── workflow.py
+│   │       ├── hours.py
+│   │       ├── complaints.py
+│   │       └── progress.py
+│
+│   ├── core/                       # App configuration
+│   │   ├── config.py
+│   │   ├── logging.py
+│   │   └── constants.py
+│
+│   ├── db/                         # Database Layer
+│   │   ├── session.py
+│   │   ├── base.py
+│   │   │
+│   │   ├── models/
+│   │   │   ├── staging_workflow.py
+│   │   │   ├── staging_hours.py
+│   │   │   ├── staging_complaints.py
+│   │   │   ├── feedback.py
+│   │   │   └── audit_log.py
+│   │   │
+│   │   └── repositories/
+│   │       ├── workflow_repo.py
+│   │       ├── hours_repo.py
+│   │       ├── complaints_repo.py
+│   │       └── feedback_repo.py
+│
+│   ├── schemas/                    # Request / Response Models
+│   │   ├── workflow_schema.py
+│   │   ├── ai_schema.py
+│   │   └── feedback_schema.py
+│
+│   ├── services/                   # Business Logic
+│   │   ├── workflow_service.py
+│   │   ├── revert_service.py
+│   │   ├── progress_service.py
+│   │   └── commit_service.py
+│
+│   ├── ai/                         # RAG Layer
+│   │   ├── embeddings.py
+│   │   ├── vector_search.py
+│   │   ├── rag_pipeline.py
+│   │   └── confidence_engine.py
+│
+│   ├── integrations/               # External systems
+│   │   ├── azure_search_client.py
+│   │   ├── openai_client.py
+│   │   ├── accela_client.py
+│   │   └── postgres_client.py
+│
+│   └── utils/
+│       └── helpers.py
+│
+├── migrations/
+├── requirements.txt
+├── .env
+├── Dockerfile
+└── README.md
